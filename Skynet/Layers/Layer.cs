@@ -1,4 +1,5 @@
 ﻿using Skynet.Model;
+using System;
 using System.Collections.Generic;
 
 namespace Skynet.Layers
@@ -12,18 +13,19 @@ namespace Skynet.Layers
         /// <summary>
         /// Тип нейрона
         /// </summary>
-        public NeuronType NeuronType { get; }
-        /// <summary>
-        /// Число нейронов в слое
-        /// </summary>
         public int Count => Neurons?.Count ?? 0;
 
         /// <summary>
         /// [List] - список нейронов с слое, [NeuronType] - тип нейронов в слое
         /// </summary>
-        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
+        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Hidden)
         {
-            NeuronType = type;
+            //TODO: проверка на тип нейронов и тип слоя
+            foreach (var neuron in neurons)
+            {
+                if (neuron.NeuronType != type) throw new NotImplementedException();
+            }
+
             Neurons = neurons;
         }
 

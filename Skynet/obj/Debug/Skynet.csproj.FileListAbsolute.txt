@@ -1,1 +1,6 @@
 C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\obj\Debug\Skynet.csprojAssemblyReference.cache
+C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\bin\Debug\Skynet.exe.config
+C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\bin\Debug\Skynet.exe
+C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\bin\Debug\Skynet.pdb
+C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\obj\Debug\Skynet.exe
+C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\obj\Debug\Skynet.pdb

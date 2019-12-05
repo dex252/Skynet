@@ -36,7 +36,7 @@ namespace Skynet.Network
 
             for (int i = 0; i < Topology.InputCountNeurons; i++)
             {
-                var neuron = new Neuron(1);
+                var neuron = new Neuron(1, NeuronType.Input);
                 inputNeurons.Add(neuron);
             }
 
@@ -131,7 +131,7 @@ namespace Skynet.Network
 
             for (int i = 0; i < Topology.OutputCountNeurons; i++)
             {
-                var neuron = new Neuron(lastLayer.Count);
+                var neuron = new Neuron(lastLayer.Count, NeuronType.Output);
                 outputNeurons.Add(neuron);
             }
 

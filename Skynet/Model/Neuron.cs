@@ -6,7 +6,7 @@ namespace Skynet.Model
     public enum NeuronType
     {
         Input = 0,
-        Normal = 1,
+        Hidden = 1,
         Output = 2,
     }
 
@@ -17,6 +17,10 @@ namespace Skynet.Model
         /// </summary>
         public List<float> Weights { get; }
         /// <summary>
+        /// Тип нейрона
+        /// </summary>
+        public NeuronType NeuronType { get; }
+        /// <summary>
         /// Сумма весов
         /// </summary>
         public float Output { get; private set; }
@@ -24,9 +28,10 @@ namespace Skynet.Model
         /// <summary>
         /// [int] - Количество входящих нейронов, [NeuronType] - тип создаваемого нейрона
         /// </summary>
-        public Neuron(int inputCountNeuron)
+        public Neuron(int inputCountNeuron, NeuronType type = NeuronType.Hidden)
         {
             Weights = new List<float>();
+            NeuronType = type;
 
             for (int i = 0; i < inputCountNeuron; i++)
             {
@@ -60,8 +65,15 @@ namespace Skynet.Model
                     sum += inputs[i] * Weights[i];
                 }
 
-                Output = Sigmoid(sum);
-
+                if (NeuronType != NeuronType.Input)
+                {
+                    Output = Sigmoid(sum);
+                }
+                else
+                {
+                    Output = sum;
+                }
+               
                 return Output;
             }
             else

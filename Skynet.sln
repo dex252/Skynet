@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skynet", "Skynet\Skynet.csproj", "{F4F29B87-B842-482A-95AE-0B3C3695695F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkynetTests", "SkynetTests\SkynetTests.csproj", "{28B45433-2F8B-4D32-9B28-E71AE0D7D260}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F4F29B87-B842-482A-95AE-0B3C3695695F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4F29B87-B842-482A-95AE-0B3C3695695F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4F29B87-B842-482A-95AE-0B3C3695695F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28B45433-2F8B-4D32-9B28-E71AE0D7D260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28B45433-2F8B-4D32-9B28-E71AE0D7D260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28B45433-2F8B-4D32-9B28-E71AE0D7D260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28B45433-2F8B-4D32-9B28-E71AE0D7D260}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

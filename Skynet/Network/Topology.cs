@@ -5,7 +5,7 @@ namespace Skynet.Network
     /// <summary>
     /// Топология нейросети
     /// </summary>
-    public abstract class Topology
+    public class Topology
     {
         /// <summary>
         /// Число нейронов на первом слое
