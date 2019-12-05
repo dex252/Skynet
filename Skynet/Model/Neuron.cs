@@ -15,11 +15,7 @@ namespace Skynet.Model
         /// <summary>
         /// Список весов
         /// </summary>
-        public List<float> Weight { get; }
-        /// <summary>
-        /// Тип нейрона
-        /// </summary>
-        public NeuronType NeuronType { get; }
+        public List<float> Weights { get; }
         /// <summary>
         /// Сумма весов
         /// </summary>
@@ -28,14 +24,24 @@ namespace Skynet.Model
         /// <summary>
         /// [int] - Количество входящих нейронов, [NeuronType] - тип создаваемого нейрона
         /// </summary>
-        public Neuron(int inputCountNeuron, NeuronType type = NeuronType.Normal)
+        public Neuron(int inputCountNeuron)
         {
-            NeuronType = type;
-            Weight = new List<float>();
+            Weights = new List<float>();
 
             for (int i = 0; i < inputCountNeuron; i++)
             {
-                Weight.Add(1);
+                Weights.Add(1);
+            }
+        }
+
+        /// <summary>
+        /// УДАЛИТЬ после введения возможности обучения
+        /// </summary>
+        public void SetWeights(params float[] weights)
+        {
+            for (int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
             }
         }
 
@@ -45,13 +51,13 @@ namespace Skynet.Model
         /// </summary>
         public float FeedForward(List<float> inputs)
         {
-            if (Weight.Count == inputs.Count)
+            if (Weights.Count == inputs.Count)
             {
                 var sum = 0.0f;
 
                 for (int i = 0; i < inputs.Count; i++)
                 {
-                    sum += inputs[i] * Weight[i];
+                    sum += inputs[i] * Weights[i];
                 }
 
                 Output = Sigmoid(sum);

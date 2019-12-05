@@ -43,12 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Neuron.cs" />
+    <Compile Include="Layers\Layer.cs" />
+    <Compile Include="Neuron\Neuron.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="Network\Topology.cs" />
+    <Compile Include="Network\NeuralNetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
