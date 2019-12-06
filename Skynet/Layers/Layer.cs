@@ -13,8 +13,8 @@ namespace Skynet.Layers
         /// <summary>
         /// Тип нейрона
         /// </summary>
-        public int Count => Neurons?.Count ?? 0;
-
+        public int NeuronsCount => Neurons?.Count ?? 0;
+        public NeuronType NeuronType { get; }
         /// <summary>
         /// [List] - список нейронов с слое, [NeuronType] - тип нейронов в слое
         /// </summary>
@@ -25,6 +25,8 @@ namespace Skynet.Layers
             {
                 if (neuron.NeuronType != type) throw new NotImplementedException();
             }
+
+            NeuronType = type;
 
             Neurons = neurons;
         }
@@ -43,6 +45,11 @@ namespace Skynet.Layers
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return NeuronType.ToString();
         }
     }
 }

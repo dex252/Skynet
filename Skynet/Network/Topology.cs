@@ -19,9 +19,15 @@ namespace Skynet.Network
         /// Число нейронов на каждом скрытом слое
         /// </summary>
         public List<int> CountNeuronsInHiddenLayers { get; }
+        /// <summary>
+        /// Рейтинг обучения (качество/производительность)
+        /// </summary>
+        public float LearningRate { get; }
 
-        public Topology(int inputCountNeurons, int outputCountNeurons, params int[] layers)
+        public Topology(float learningRate, int inputCountNeurons, int outputCountNeurons, params int[] layers)
         {
+            LearningRate = learningRate;
+
             InputCountNeurons = inputCountNeurons;
             OutputCountNeurons = outputCountNeurons;
 

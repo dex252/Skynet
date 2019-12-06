@@ -15,8 +15,7 @@ namespace Skynet.Network
         /// <summary>
         /// Слои в нейросети
         /// </summary>
-        public List <Layer> Layers { get; }
-
+        public List<Layer> Layers { get; }
         public NeuralNetwork(Topology topology)
         {
             Topology = topology;
@@ -25,6 +24,60 @@ namespace Skynet.Network
             CreateInputLayer();
             CreateHiddenLayers();
             CreateOutputLayer();
+        }
+        /// <summary>
+        /// Обучение на датасете, где Turtle - список датасетов с ожидаемым результатом и входящими данными и [int] - число эпох обучения
+        /// </summary>
+        public float Learn(List<Tuple<float, float[]>> dataset, int epoch)
+        {
+            var error = 0.0f;
+
+            for (int i = 0; i < epoch; i++)
+            {
+                foreach (var data in dataset)
+                {
+                    error += Backpropagation(data.Item1, data.Item2);
+                }
+            }
+
+            return (error / epoch);
+        }
+
+        /// <summary>
+        /// Обратное распространение ошибки, [float] - ожидаемый результат, [params float] - входящие сигналы
+        /// </summary>
+        private float Backpropagation(float excepted, params float[] inputs)
+        {
+            var actual = FeetForward(inputs).Output;
+
+            var difference = actual - excepted;
+
+            foreach (var neuron in Layers.Last().Neurons)
+            {
+                neuron.Learn(difference, Topology.LearningRate);
+            }
+
+            for (int i = Layers.Count - 2; i >= 0; i--)
+            {
+                var layer = Layers[i];
+                var previousLayer = Layers[i + 1];
+
+                for (int j = 0; j < layer.NeuronsCount; j++)
+                {
+                    var neuron = layer.Neurons[j];
+
+                    for (int k = 0; k < previousLayer.NeuronsCount; k++)
+                    {
+                        var previousNeuron = previousLayer.Neurons[k];
+
+                        var error = previousNeuron.Weights[j] * previousNeuron.Delta;
+                        neuron.Learn(error, Topology.LearningRate);
+                    }
+                }
+
+            }
+
+            return (difference * difference);
         }
 
         /// <summary>
@@ -43,7 +96,6 @@ namespace Skynet.Network
             var inputLayer = new Layer(inputNeurons, NeuronType.Input);
             Layers.Add(inputLayer);
         }
-
         /// <summary>
         /// Добавление скрытых слоев нейронов, число связей равно числу нейронов в предыдущем слое
         /// </summary>
@@ -56,7 +108,7 @@ namespace Skynet.Network
 
                 for (int i = 0; i < Topology.CountNeuronsInHiddenLayers[j]; i++)
                 {
-                    var neuron = new Neuron(lastLayer.Count);
+                    var neuron = new Neuron(lastLayer.NeuronsCount);
                     hiddenNeurons.Add(neuron);
                 }
 
@@ -64,13 +116,12 @@ namespace Skynet.Network
                 Layers.Add(hiddentLayer);
             }
         }
-
         /// <summary>
         /// Принимает набор входных сигналов из DataSet, число сигналов должно соответствовать топологии на первом слое
         /// </summary>
-        public Neuron FeetForward(List<float> inputSignals)
+        public Neuron FeetForward(params float[] inputSignals)
         {
-            if (Topology.InputCountNeurons != inputSignals.Count) throw new NotImplementedException();
+            if (Topology.InputCountNeurons != inputSignals.Length) throw new NotImplementedException();
 
             SendSignalsToInputNeurons(inputSignals);
             FeetForwardAllLayersAfterInput();
@@ -81,11 +132,10 @@ namespace Skynet.Network
             }
             else
             {
-                return Layers.Last().Neurons.OrderByDescending( (neuron) => neuron.Output).First();
+                return Layers.Last().Neurons.OrderByDescending((neuron) => neuron.Output).First();
             }
 
         }
-
         /// <summary>
         /// Передача сигналов из предыдущих слоев последующим
         /// </summary>
@@ -106,9 +156,9 @@ namespace Skynet.Network
         /// <summary>
         /// Передача сигналов из DataSet на нейроны в первом слое
         /// </summary>
-        private void SendSignalsToInputNeurons(List<float> inputSignals)
+        private void SendSignalsToInputNeurons(params float[] inputSignals)
         {
-            for (int i = 0; i < inputSignals.Count; i++)
+            for (int i = 0; i < inputSignals.Length; i++)
             {
                 var signal = new List<float>()
                 {
@@ -131,7 +181,7 @@ namespace Skynet.Network
 
             for (int i = 0; i < Topology.OutputCountNeurons; i++)
             {
-                var neuron = new Neuron(lastLayer.Count, NeuronType.Output);
+                var neuron = new Neuron(lastLayer.NeuronsCount, NeuronType.Output);
                 outputNeurons.Add(neuron);
             }
 

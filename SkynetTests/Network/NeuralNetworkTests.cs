@@ -21,6 +21,8 @@ namespace Skynet.Network.Tests
             neuralNetwork.Layers[1].Neurons[1].SetWeights(0.1f, -0.3f, 0.7f, -0.3f);
             neuralNetwork.Layers[2].Neurons[0].SetWeights(1.2f, 0.8f);
 
+            //1:22:16 Вадим
+
             var result = neuralNetwork.FeetForward(new List<float>()
             {
                 0,1,0,1

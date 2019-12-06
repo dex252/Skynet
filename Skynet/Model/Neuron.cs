@@ -17,6 +17,10 @@ namespace Skynet.Model
         /// </summary>
         public List<float> Weights { get; }
         /// <summary>
+        /// Список входящих сигналов
+        /// </summary>
+        public List<float> InputSignals { get; }
+        /// <summary>
         /// Тип нейрона
         /// </summary>
         public NeuronType NeuronType { get; }
@@ -24,6 +28,10 @@ namespace Skynet.Model
         /// Сумма весов
         /// </summary>
         public float Output { get; private set; }
+        /// <summary>
+        /// Ошибка
+        /// </summary>
+        public float Delta { get; private set; }
 
         /// <summary>
         /// [int] - Количество входящих нейронов, [NeuronType] - тип создаваемого нейрона
@@ -31,11 +39,20 @@ namespace Skynet.Model
         public Neuron(int inputCountNeuron, NeuronType type = NeuronType.Hidden)
         {
             Weights = new List<float>();
+            InputSignals = new List<float>();
             NeuronType = type;
+
+            InitWeightsRandomValues(inputCountNeuron);
+        }
+
+        private void InitWeightsRandomValues(int inputCountNeuron)
+        {
+            var rand = new Random();
 
             for (int i = 0; i < inputCountNeuron; i++)
             {
-                Weights.Add(1);
+                Weights.Add((float)rand.NextDouble());
+                InputSignals.Add(0);
             }
         }
 
@@ -62,6 +79,8 @@ namespace Skynet.Model
 
                 for (int i = 0; i < inputs.Count; i++)
                 {
+                    InputSignals[i] = inputs[i];
+
                     sum += inputs[i] * Weights[i];
                 }
 
@@ -80,6 +99,33 @@ namespace Skynet.Model
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private float SigmoidDx(float x)
+        {
+            var sigmoid = Sigmoid(x);
+            var result =  sigmoid / (1 - sigmoid);
+
+            return result;
+        }
+
+        public void Learn(float error, float learningRate)
+        {
+            if (NeuronType != NeuronType.Input)
+            {
+                Delta = error * SigmoidDx(Output);
+
+                for (int i = 0; i < Weights.Count; i++)
+                {
+                    var weight = Weights[i];
+                    var input = InputSignals[i];
+
+                    var newWeight = weight - input * Delta * learningRate;
+                    Weights[i] = newWeight;
+                }
+
+            }
+
         }
 
         private float Sigmoid(float x)
