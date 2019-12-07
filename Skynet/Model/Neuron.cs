@@ -51,19 +51,17 @@ namespace Skynet.Model
 
             for (int i = 0; i < inputCountNeuron; i++)
             {
-                Weights.Add((float)rand.NextDouble());
-                InputSignals.Add(0);
-            }
-        }
+                if (NeuronType == NeuronType.Input)
+                {
+                   Weights.Add(1);
 
-        /// <summary>
-        /// УДАЛИТЬ после введения возможности обучения
-        /// </summary>
-        public void SetWeights(params float[] weights)
-        {
-            for (int i = 0; i < weights.Length; i++)
-            {
-                Weights[i] = weights[i];
+                }
+                else
+                {
+                    Weights.Add((float)rand.NextDouble());
+                }
+
+                InputSignals.Add(0);
             }
         }
 

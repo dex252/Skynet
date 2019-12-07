@@ -4,3 +4,10 @@ C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\bin\Debug\Skynet.exe
 C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\bin\Debug\Skynet.pdb
 C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\obj\Debug\Skynet.exe
 C:\Users\Slava\Desktop\Skynet\Skynet\Skynet\obj\Debug\Skynet.pdb
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\bin\Debug\Skynet.exe.config
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\bin\Debug\Skynet.exe
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\bin\Debug\Skynet.pdb
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\obj\Debug\Skynet.csprojAssemblyReference.cache
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\obj\Debug\Skynet.csproj.CoreCompileInputs.cache
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\obj\Debug\Skynet.exe
+C:\Users\dex25\Desktop\NeuroNetwork\Skynet\Skynet\obj\Debug\Skynet.pdb
