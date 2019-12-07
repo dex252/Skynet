@@ -30,6 +30,9 @@ namespace Skynet.Network
         /// </summary>
         public float Learn(float[] expected, float[,] inputs, int epoch)
         {
+            var sig = Scaling(inputs);
+            var signals = Normalization(sig);
+
             var error = 0.0f;
 
             for (int i = 0; i < epoch; i++)
@@ -37,7 +40,7 @@ namespace Skynet.Network
                 for (int j = 0; j < expected.Length; j++)
                 {
                     var output = expected[j];
-                    var input = GetRow(inputs, j);
+                    var input = GetRow(signals, j);
 
                     error += Backpropagation(output, input);
                 }
