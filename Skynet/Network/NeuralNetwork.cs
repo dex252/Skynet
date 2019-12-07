@@ -28,19 +28,157 @@ namespace Skynet.Network
         /// <summary>
         /// Обучение на датасете, где Turtle - список датасетов с ожидаемым результатом и входящими данными и [int] - число эпох обучения
         /// </summary>
-        public float Learn(List<Tuple<float, float[]>> dataset, int epoch)
+        public float Learn(float[] expected, float[,] inputs, int epoch)
         {
             var error = 0.0f;
 
             for (int i = 0; i < epoch; i++)
             {
-                foreach (var data in dataset)
+                for (int j = 0; j < expected.Length; j++)
                 {
-                    error += Backpropagation(data.Item1, data.Item2);
+                    var output = expected[j];
+                    var input = GetRow(inputs, j);
+
+                    error += Backpropagation(output, input);
                 }
             }
 
             return (error / epoch);
+        }
+
+        /// <summary>
+        /// Принимает набор входных сигналов из DataSet, число сигналов должно соответствовать топологии на первом слое
+        /// </summary>
+        public Neuron FeetForward(params float[] inputSignals)
+        {
+            if (Topology.InputCountNeurons != inputSignals.Length) throw new NotImplementedException();
+
+            SendSignalsToInputNeurons(inputSignals);
+            FeetForwardAllLayersAfterInput();
+
+            if (Topology.OutputCountNeurons == 1)
+            {
+                return Layers.Last().Neurons[0];
+            }
+            else
+            {
+                return Layers.Last().Neurons.OrderByDescending((neuron) => neuron.Output).First();
+            }
+
+        }
+
+        /// <summary>
+        /// Получение строки [int] из датасета [float [,]]
+        /// </summary>
+        public float[] GetRow(float[,] matrix, int row)
+        {
+            var columns = matrix.GetLength(1);
+            var array = new float[columns];
+
+            for (int i = 0; i < columns; i++)
+            {
+                array[i] = matrix[row, i];
+            }
+
+            return array;
+        }
+
+        /// <summary>
+        /// Нормализация данных, где [float [,]] - все входящие и отмасштабированные сигналы
+        /// </summary>
+        private float[,] Normalization(float[,] inputsSignals)
+        {
+            var result = new float[inputsSignals.GetLength(0), inputsSignals.GetLength(1)];
+
+            for (int column = 0; column < inputsSignals.GetLength(1); column++)
+            {
+                var average = AverageValueOfNeuronSignal(inputsSignals, column);
+
+                var standardDeviation = StandardDeviation(inputsSignals, column, average);
+
+                //Новое значение сигнала
+                for (int row = 0; row < inputsSignals.GetLength(0); row++)
+                {
+                    result[row, column] = (inputsSignals[row, column] - average) / standardDeviation;
+                }
+
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Вычисление стандартного среднего квадратичного отклонения нейрона
+        /// </summary>
+        private float StandardDeviation(float[,] inputsSignals, int column, float average)
+        {
+            var error = 0.0f;
+
+            for (int row = 0; row < inputsSignals.GetLength(0); row++)
+            {
+                error += (float)Math.Pow((inputsSignals[row, column] - average), 2);
+            }
+
+            var standardDeviation = (float)Math.Sqrt(error / inputsSignals.GetLength(0));
+
+            return standardDeviation;
+        }
+
+        /// <summary>
+        /// Вычисление среднего значения сигнала нейрона
+        /// </summary>
+        private float AverageValueOfNeuronSignal(float[,] inputsSignals, int column)
+        {
+
+            var sum = 0.0f;
+
+            for (int row = 0; row < inputsSignals.GetLength(0); row++)
+            {
+                sum += inputsSignals[row, column];
+            }
+
+            var average = sum / inputsSignals.GetLongLength(0);
+
+            return average;
+        }
+
+        /// <summary>
+        /// Масштабирование данных, где [float [,]] - все входящие сигналы
+        /// </summary>
+        private float[,] Scaling(float[,] inputsSignals)
+        {
+            var result = new float[inputsSignals.GetLength(0), inputsSignals.GetLength(1)];
+
+            for (int column = 0; column < inputsSignals.GetLength(1); column++)
+            {
+                var min = inputsSignals[0, column];
+                var max = inputsSignals[0, column];
+
+                //находим min и max в каждом столбце
+                for (int row = 1; row < inputsSignals.GetLength(0); row++)
+                {
+                    var item = inputsSignals[row, column];
+
+                    if (item < min)
+                    {
+                        min = item;
+                    }
+
+                    if (item > max)
+                    {
+                        max = item;
+                    }
+                }
+
+                //находим усредненное значение в пределах min и max для каждого значения в столбце
+                for (int row = 1; row < inputsSignals.GetLength(0); row++)
+                {
+                    result[row, column] = (inputsSignals[row, column] - min) / (max - min);
+                }
+
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -116,26 +254,7 @@ namespace Skynet.Network
                 Layers.Add(hiddentLayer);
             }
         }
-        /// <summary>
-        /// Принимает набор входных сигналов из DataSet, число сигналов должно соответствовать топологии на первом слое
-        /// </summary>
-        public Neuron FeetForward(params float[] inputSignals)
-        {
-            if (Topology.InputCountNeurons != inputSignals.Length) throw new NotImplementedException();
-
-            SendSignalsToInputNeurons(inputSignals);
-            FeetForwardAllLayersAfterInput();
-
-            if (Topology.OutputCountNeurons == 1)
-            {
-                return Layers.Last().Neurons[0];
-            }
-            else
-            {
-                return Layers.Last().Neurons.OrderByDescending((neuron) => neuron.Output).First();
-            }
-
-        }
+       
         /// <summary>
         /// Передача сигналов из предыдущих слоев последующим
         /// </summary>
