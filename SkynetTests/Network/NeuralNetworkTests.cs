@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Skynet.Converter;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,7 +47,7 @@ namespace Skynet.Network.Tests
             for (int i = 0; i < outputs.Length; i++)
             {
                 var row = neuralNetwork.GetRow(inputs, i);
-                var res = neuralNetwork.FeetForward(row).Output;
+                var res = neuralNetwork.Predict(row).Output;
                 results.Add(res);
             }
 
@@ -99,7 +100,7 @@ namespace Skynet.Network.Tests
             for (int i = 0; i < outputs.Count; i++)
             {
                 var row = inputs[i];
-                var res = neuralNetwork.FeetForward(row).Output;
+                var res = neuralNetwork.Predict(row).Output;
                 results.Add(res);
             }
 
@@ -109,6 +110,70 @@ namespace Skynet.Network.Tests
                 var actual = Math.Round(results[i], 2);
                 Assert.AreEqual(excepted, actual);
             }
+        }
+        
+        [TestMethod()]
+        public void ImageDataSet()
+        {
+            var parasitedPath = @"C:\Users\Slava\Desktop\Skynet\Skynet\cell_images\Parasitized\";
+            var clearPath = @"C:\Users\Slava\Desktop\Skynet\Skynet\cell_images\Uninfected\";
+
+            var converter = new ImgConvert();
+            var testC = converter.Convert(@"C:\Users\Slava\Desktop\Skynet\Skynet\SkynetTests\images\clear.png");
+            var testP = converter.Convert(@"C:\Users\Slava\Desktop\Skynet\Skynet\SkynetTests\images\paras.png");
+
+            var topology = new Topology(0.01f, testC.Length, 1, testC.Length / 2, testC.Length / 4, testC.Length / 8, testC.Length / 16, testC.Length / 32);
+            //var topology = new Topology(0.01f, testC.Length, 1, testC.Length / 2);
+
+            var neuralNetwork = new NeuralNetwork(topology);
+
+            var size = 13779; //13780
+
+            float[,] parasitedInputs = GetParasitedSignals(parasitedPath, converter, testC, size);
+            float[,] clearInputs = GetClearSignals(clearPath, converter, testC, size);
+
+            neuralNetwork.Learn(new float[] { 1 }, parasitedInputs, 1);
+            neuralNetwork.Learn(new float[] { 0 }, clearInputs, 1);
+
+            var resultClear = neuralNetwork.Predict(testC.Select(data=>(float)data).ToArray());
+            var resultParas = neuralNetwork.Predict(testP.Select(data => (float)data).ToArray());
+
+            Assert.AreEqual(0f, Math.Round(resultClear.Output, 2));
+            Assert.AreEqual(1f, Math.Round(resultParas.Output, 2));
+        }
+
+        private static float[,] GetParasitedSignals(string parasitedPath, ImgConvert converter, float[] test, int size)
+        {
+            var parasitedImages = Directory.GetFiles(parasitedPath);
+            var parasitedInputs = new float[size, test.Length];
+
+            for (int i = 0; i < size; i++)
+            {
+                var img = converter.Convert(parasitedImages[i]);
+                for (int j = 0; j < img.Length; j++)
+                {
+                    parasitedInputs[i, j] = img[j];
+                }
+            }
+
+            return parasitedInputs;
+        }
+
+        private static float[,] GetClearSignals(string clearPath, ImgConvert converter, float[] test, int size)
+        {
+            var clearImages = Directory.GetFiles(clearPath);
+            var clearInputs = new float[size, test.Length];
+
+            for (int i = 0; i < size; i++)
+            {
+                var img = converter.Convert(clearImages[i]);
+                for (int j = 0; j < img.Length; j++)
+                {
+                    clearInputs[i, j] = img[j];
+                }
+            }
+
+            return clearInputs;
         }
     }
 

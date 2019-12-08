@@ -30,8 +30,8 @@ namespace Skynet.Network
         /// </summary>
         public float Learn(float[] expected, float[,] inputs, int epoch)
         {
-            var sig = Scaling(inputs);
-            var signals = Normalization(sig);
+            //var sig = Scaling(inputs);
+            //var signals = Normalization(sig);
 
             var error = 0.0f;
 
@@ -40,7 +40,7 @@ namespace Skynet.Network
                 for (int j = 0; j < expected.Length; j++)
                 {
                     var output = expected[j];
-                    var input = GetRow(signals, j);
+                    var input = GetRow(inputs, j);
 
                     error += Backpropagation(output, input);
                 }
@@ -52,7 +52,7 @@ namespace Skynet.Network
         /// <summary>
         /// Принимает набор входных сигналов из DataSet, число сигналов должно соответствовать топологии на первом слое
         /// </summary>
-        public Neuron FeetForward(params float[] inputSignals)
+        public Neuron Predict(params float[] inputSignals)
         {
             if (Topology.InputCountNeurons != inputSignals.Length) throw new NotImplementedException();
 
@@ -189,7 +189,7 @@ namespace Skynet.Network
         /// </summary>
         private float Backpropagation(float excepted, params float[] inputs)
         {
-            var actual = FeetForward(inputs).Output;
+            var actual = Predict(inputs).Output;
 
             var difference = actual - excepted;
 

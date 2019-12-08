@@ -38,3 +38,4 @@ C:\Users\dex25\Desktop\NeuroNetwork\Skynet\SkynetTests\obj\Debug\SkynetTests.csp
 C:\Users\dex25\Desktop\NeuroNetwork\Skynet\SkynetTests\obj\Debug\SkynetTests.dll
 C:\Users\dex25\Desktop\NeuroNetwork\Skynet\SkynetTests\obj\Debug\SkynetTests.pdb
 C:\Users\dex25\Desktop\NeuroNetwork\Skynet\SkynetTests\bin\Debug\heart.csv
+C:\Users\Slava\Desktop\Skynet\Skynet\SkynetTests\bin\Debug\heart.csv

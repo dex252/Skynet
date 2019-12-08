@@ -8,42 +8,57 @@ namespace Skynet.Converter
     /// </summary>
     public class ImgConvert
     {
+        /// <summary>
+        /// [int] - пороговая величина для перекраски пикселей в черный цвет (0-127) и белый (128-255)
+        /// </summary>
         public int Threshold { get; set; } = 128;
+        /// <summary>
+        /// [int] - Ширина последнего загруженного изображения
+        /// </summary>
+        private int Width { get;  set; }
+        /// <summary>
+        /// [int] - Высота последнего загруженного изображения
+        /// </summary>
+        private int Height { get;  set; }
         /// <summary>
         /// Конверт цветного изображения в список черных и белых пикселей
         /// false - черный, true - белый
         /// </summary>
-        public List<bool> Convert(string path)
+        public float[] Convert(string path)
         {
-            var result = new List<bool>();
+            var result = new List<float>();
 
             Bitmap img = new Bitmap(path);
+            var resizeImg = new Bitmap(img, new Size(50, 50));
 
-            for (int x = 0; x < img.Width; x++)
+            Width = resizeImg.Width;
+            Height = resizeImg.Height;
+
+            for (int y = 0; y < resizeImg.Height; y++)
             {
-                for (int y = 0; y < img.Height; y++)
+                for (int x = 0; x < resizeImg.Width; x++)
                 {
-                    var pixel = img.GetPixel(x, y);
-
+                    var pixel = resizeImg.GetPixel(x, y);
+                        
                     result.Add(Brightness(pixel));
                 }
             }
 
-            return result;
+            return result.ToArray();
         }
 
         /// <summary>
         /// Сохранение конечного изображения после обработки [string] - путь к сохранению, [int, int] - ширина и высота изображения, [List] - список черно-белых пикселей
         /// </summary>
-        public void Save (string pathToSave, int width, int height, List<bool> pixels)
+        public void Save (string pathToSave, List<float> pixels)
         {
-            var img = new Bitmap(width, height);
+            var img = new Bitmap(Width, Height);
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < Height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < Width; x++)
                 {
-                    var color = pixels[y * width + x] == true ? Color.White : Color.Black;
+                    var color = pixels[y * Width + x] == 1f ? Color.White : Color.Black;
                     img.SetPixel(x, y, color);
                 }
             }
@@ -54,12 +69,13 @@ namespace Skynet.Converter
         /// <summary>
         /// Конверт одного пикеселя в черно-белый вариант
         /// </summary>
-        private bool Brightness(Color pixel)
+        private float Brightness(Color pixel)
         {
            
-            var result = (0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B);
+            var result = (float)(0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B);
 
-            return !(result < Threshold);
+            return result < Threshold ? 0f : 1f;
+           
         }
     }
 }
